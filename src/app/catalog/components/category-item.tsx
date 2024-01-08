@@ -8,7 +8,7 @@ interface CatalogProps {
 
 const CatalogItem = ({ category }: CatalogProps) => {
   return (
-    <Link href={`/catalog/${category.slug}`}>
+    <Link href={`/category/${category.slug}`}>
       <div className="flex flex-col">
         <div className="flex h-[150px] w-full items-center justify-center rounded-tl-lg rounded-tr-lg bg-category-item-gradient">
           <Image

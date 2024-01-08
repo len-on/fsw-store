@@ -65,7 +65,7 @@ export default async function Home() {
 
       <div>
         <SectionTitle>Mouses</SectionTitle>
-        <ProductList products={keyboards} />
+        <ProductList products={mouses} />
       </div>
     </div>
   );
