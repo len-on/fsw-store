@@ -26,49 +26,51 @@ export const CartContext = createContext<ICartContext>({
   cartTotalPrice: 0,
   cartBasePrice: 0,
   cartTotalDiscount: 0,
+  total: 0,
+  subtotal: 0,
+  totalDiscount: 0,
   addProductToCart: () => {},
   decreaseProductQuantity: () => {},
   increaseProductQuantity: () => {},
   removeProductFromCart: () => {},
-  total: 0,
-  subtotal: 0,
-  totalDiscount: 0,
 });
 
 const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<CartProduct[]>(
-    JSON.parse(localStorage.getItem("@fws-store/cart-products") || "[]") 
-  );
+  const [products, setProducts] = useState<CartProduct[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("@fws-store/cart-products", JSON.stringify(products));
+    setProducts(
+      JSON.parse(localStorage.getItem("@fsw-store/cart-products") || "[]"),
+    );
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("@fsw-store/cart-products", JSON.stringify(products));
   }, [products]);
 
   // Total sem descontos
   const subtotal = useMemo(() => {
     return products.reduce((acc, product) => {
-      
       return acc + Number(product.basePrice) * product.quantity;
     }, 0);
-  }, [products])
+  }, [products]);
 
-  //Total com descontos
+  // Total com descontos
   const total = useMemo(() => {
     return products.reduce((acc, product) => {
-      
-      return acc + Number(product.totalPrice) * product.quantity;
+      return acc + product.totalPrice * product.quantity;
     }, 0);
-  }, [products])
+  }, [products]);
 
-  const totalDiscount = subtotal - total
+  const totalDiscount = subtotal - total;
 
   const addProductToCart = (product: CartProduct) => {
-    // se o produto já estiver no carrinho, apenas aumente sua quantidade
-    const productIsAlreadyInCart = products.some(
+    // se o produto já estiver no carrinho, apenas aumente a sua quantidade
+    const productIsAlreadyOnCart = products.some(
       (cartProduct) => cartProduct.id === product.id,
     );
 
-    if (productIsAlreadyInCart) {
+    if (productIsAlreadyOnCart) {
       setProducts((prev) =>
         prev.map((cartProduct) => {
           if (cartProduct.id === product.id) {
@@ -81,18 +83,15 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
           return cartProduct;
         }),
       );
+
       return;
     }
 
-    // se não, adicione o produto ao carrinho
+    // se não, adicione o produto à lista
     setProducts((prev) => [...prev, product]);
   };
 
   const decreaseProductQuantity = (productId: string) => {
-    // se a quantidade do produto for 1, remova-o do carrinho
-
-    //se não. diminua a quantidade em 1
-
     setProducts((prev) =>
       prev
         .map((cartProduct) => {
@@ -102,6 +101,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
               quantity: cartProduct.quantity - 1,
             };
           }
+
           return cartProduct;
         })
         .filter((cartProduct) => cartProduct.quantity > 0),
@@ -117,6 +117,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
             quantity: cartProduct.quantity + 1,
           };
         }
+
         return cartProduct;
       }),
     );
@@ -126,22 +127,22 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
     setProducts((prev) =>
       prev.filter((cartProduct) => cartProduct.id !== productId),
     );
-  }
+  };
 
   return (
     <CartContext.Provider
       value={{
         products,
         addProductToCart,
-        cartTotalPrice: 0,
-        cartBasePrice: 0,
-        cartTotalDiscount: 0,
         decreaseProductQuantity,
         increaseProductQuantity,
         removeProductFromCart,
         total,
         subtotal,
         totalDiscount,
+        cartTotalPrice: 0,
+        cartBasePrice: 0,
+        cartTotalDiscount: 0,
       }}
     >
       {children}
