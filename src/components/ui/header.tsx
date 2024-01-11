@@ -111,10 +111,14 @@ const Header = () => {
               </Link>
             </SheetClose>
 
-            <Button variant="outline" className="with-fill justify-start gap-2">
+            <SheetClose asChild>
+              <Link href={"/deals"}>
+                <Button variant="outline" className="with-fill justify-start gap-2">
               <PercentIcon size={16} />
               Ofertas
             </Button>
+              </Link>
+            </SheetClose>
 
             <SheetClose asChild>
               <Link href={"/catalog"}>
