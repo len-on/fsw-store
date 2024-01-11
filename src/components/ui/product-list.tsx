@@ -10,8 +10,8 @@ const ProductList = ({ products }: ProductListProps) => {
   return (
     <div className="flex w-full gap-4 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
       {products.map((products) => (
-        <div className="w-[170px] max-w-[170px]">
-          <ProductItem key={products.id} product={computeProductTotalPrice(products)} />
+        <div className="w-[170px] max-w-[170px]" key={products.id}>
+          <ProductItem product={computeProductTotalPrice(products)} />
         </div>
       ))}
     </div>
