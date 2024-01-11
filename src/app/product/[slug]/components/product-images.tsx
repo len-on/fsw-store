@@ -34,6 +34,7 @@ const ProductImages = ({ name, imageUrls }: ProductImagesProps) => {
       <div className="mt-8 grid grid-cols-4 gap-4 px-5">
         {imageUrls.map((imageUrls) => (
           <button
+            key={imageUrls}
             className={`flex h-[100px] items-center rounded-lg bg-accent 
               ${
                 imageUrls === currentImage &&
