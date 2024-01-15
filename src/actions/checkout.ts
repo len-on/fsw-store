@@ -3,8 +3,10 @@
 import { CartProduct } from "@/providers/cart";
 import Stripe from "stripe";
 
-export const createCheckout = async (products: CartProduct[], orderId: string) => {
-  // CRIAR CHECKOUT
+export const createCheckout = async (
+  products: CartProduct[],
+  orderId: string,
+) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2023-10-16",
   });
@@ -15,7 +17,7 @@ export const createCheckout = async (products: CartProduct[], orderId: string) =
     success_url: process.env.HOST_URL,
     cancel_url: process.env.HOST_URL,
     metadata: {
-      orderId, 
+      orderId,
     },
     line_items: products.map((product) => {
       return {
@@ -33,8 +35,6 @@ export const createCheckout = async (products: CartProduct[], orderId: string) =
     }),
   });
 
-  // RETORNAR CHECLOUT
+  // RETORNAR O CHECKOUT
   return checkout;
 };
-
-export default createCheckout;

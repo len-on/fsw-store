@@ -9,24 +9,27 @@ import { ScrollArea } from "./scroll-area";
 import { Button } from "./button";
 import { createCheckout } from "@/actions/checkout";
 import { loadStripe } from "@stripe/stripe-js";
-import { useSession } from "next-auth/react";
 import { createOrder } from "@/actions/order";
+import { useSession } from "next-auth/react";
 
 const Cart = () => {
-  const { data } = useSession()
+  const { data } = useSession();
 
-  const { products, total, subtotal, totalDiscount } = useContext(CartContext);
+  const { products, subtotal, total, totalDiscount } = useContext(CartContext);
 
-  const handleFinishPuchaseClick = async () => {
+  const handleFinishPurchaseClick = async () => {
     if (!data?.user) {
-      return
+      // TODO: redirecionar para o login
+      return;
     }
 
-    const order = await createOrder(products, (data?.user as any).id)
+    const order = await createOrder(products, (data?.user as any).id);
 
     const checkout = await createCheckout(products, order.id);
 
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
+    // Criar pedido no banco
 
     stripe?.redirectToCheckout({
       sessionId: checkout.id,
@@ -35,10 +38,7 @@ const Cart = () => {
 
   return (
     <div className="flex h-full flex-col gap-8">
-      <Badge
-        className="w-fit gap-1 border-2 border-primary px-3 py-[0.375rem] text-base uppercase"
-        variant={"outline"}
-      >
+      <Badge variant="heading">
         <ShoppingCartIcon size={16} />
         Carrinho
       </Badge>
@@ -56,46 +56,50 @@ const Cart = () => {
               ))
             ) : (
               <p className="text-center font-semibold">
-                Seu carrinho esta vazio
+                Carrinho vazio. Vamos fazer compras?
               </p>
             )}
           </div>
         </ScrollArea>
       </div>
+
       {products.length > 0 && (
         <div className="flex flex-col gap-3">
-        <Separator />
+          <Separator />
 
-        <div className="flex items-center justify-between text-xs">
-          <p>Subtotal</p>
-          <p>R$ {subtotal.toFixed(2)}</p>
+          <div className="flex items-center justify-between text-xs lg:text-sm">
+            <p>Subtotal</p>
+            <p>R$ {subtotal.toFixed(2)}</p>
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between text-xs lg:text-sm">
+            <p>Entrega</p>
+            <p>GRÁTIS</p>
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between text-xs lg:text-sm">
+            <p>Descontos</p>
+            <p>- R$ {totalDiscount.toFixed(2)}</p>
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between text-sm font-bold lg:text-base">
+            <p>Total</p>
+            <p>R$ {total.toFixed(2)}</p>
+          </div>
+
+          <Button
+            className="mt-7 font-bold uppercase"
+            onClick={handleFinishPurchaseClick}
+          >
+            Finalizar compra
+          </Button>
         </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-between text-xs">
-          <p>Entrega</p>
-          <p>GRÁTIS</p>
-        </div>
-        <Separator />
-
-        <div className="flex items-center justify-between text-xs">
-          <p>Descontos</p>
-          <p>R$ {totalDiscount.toFixed(2)}</p>
-        </div>
-        <Separator />
-
-        <div className="flex items-center justify-between text-sm font-bold">
-          <p>Total</p>
-          <p>R$ {total.toFixed(2)}</p>
-        </div>
-        <Button
-          className="mt-7 font-bold uppercase"
-          onClick={handleFinishPuchaseClick}
-        >
-          Finalizar Compra
-        </Button>
-      </div>
       )}
     </div>
   );
