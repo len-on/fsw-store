@@ -50,73 +50,77 @@ const OrderItem = ({ order }: OrderItemProps) => {
         <AccordionItem value={order.id}>
           <AccordionTrigger>
             <div className="flex flex-col gap-1 text-left">
-              <p>Pedido com {order.orderProducts.length} produtos(s)</p>
+              <p className="font-bold uppercase">
+                Pedido com {order.orderProducts.length} produtos(s)
+              </p>
               <span className="text-sm opacity-60">
                 Feito em {format(order.createdAt, "d/MM/y 'às' HH:mm")}
               </span>
             </div>
           </AccordionTrigger>
+
+          <AccordionContent>
+            <div className="flex flex-col gap-4">
+              <div className="flex place-items-center justify-between">
+                <div className="font-bold">
+                  <p>Status</p>
+                  <p className="text-[#8162FF]">
+                    {getOrderStatus(order.status)}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-bold">Data</p>
+                  <p className="opacity-60">
+                    {format(order.createdAt, "d/MM/y")}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-bold">Pagamento</p>
+                  <p className="opacity-60">Cartão</p>
+                </div>
+              </div>
+
+              {order.orderProducts.map((orderProduct) => (
+                <OrderProductItem
+                  key={orderProduct.id}
+                  orderProduct={orderProduct}
+                />
+              ))}
+
+              <div className="flex w-full flex-col gap-1 text-xs">
+                <Separator />
+
+                <div className="flex w-full justify-between py-3">
+                  <p>Subtotal</p>
+                  <p>R$ {subtotal.toFixed(2)}</p>
+                </div>
+
+                <Separator />
+
+                <div className="flex w-full justify-between py-3">
+                  <p>Entrega</p>
+                  <p>GRÁTIS</p>
+                </div>
+
+                <Separator />
+
+                <div className="flex w-full justify-between py-3">
+                  <p>Descontos</p>
+                  <p>R$ {totalDiscounts.toFixed(2)}</p>
+                </div>
+
+                <Separator />
+
+                <div className="flex w-full justify-between py-3">
+                  <p>Total</p>
+                  <p>R$ {total.toFixed(2)}</p>
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
         </AccordionItem>
-
-        <AccordionContent>
-          <div className="flex flex-col gap-4">
-            <div className="flex place-items-center justify-between">
-              <div className="font-bold">
-                <p>Status</p>
-                <p className="text-[#8162FF]">{getOrderStatus(order.status)}</p>
-              </div>
-
-              <div>
-                <p className="font-bold">Data</p>
-                <p className="opacity-60">
-                  {format(order.createdAt, "d/MM/y")}
-                </p>
-              </div>
-
-              <div>
-                <p className="font-bold">Pagamento</p>
-                <p className="opacity-60">Cartão</p>
-              </div>
-            </div>
-
-            {order.orderProducts.map((orderProduct) => (
-              <OrderProductItem
-                key={orderProduct.id}
-                orderProduct={orderProduct}
-              />
-            ))}
-
-            <div className="flex w-full flex-col gap-1 text-xs">
-              <Separator />
-
-              <div className="flex w-full justify-between py-3">
-                <p>Subtotal</p>
-                <p>R$ {subtotal.toFixed(2)}</p>
-              </div>
-
-              <Separator />
-
-              <div className="flex w-full justify-between py-3">
-                <p>Entrega</p>
-                <p>GRÁTIS</p>
-              </div>
-
-              <Separator />
-
-              <div className="flex w-full justify-between py-3">
-                <p>Descontos</p>
-                <p>R$ {totalDiscounts.toFixed(2)}</p>
-              </div>
-
-              <Separator />
-
-              <div className="flex w-full justify-between py-3">
-                <p>Total</p>
-                <p>R$ {total.toFixed(2)}</p>
-              </div>
-            </div>
-          </div>
-        </AccordionContent>
       </Accordion>
     </Card>
   );
